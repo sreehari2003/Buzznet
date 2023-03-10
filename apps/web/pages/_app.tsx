@@ -2,6 +2,7 @@ import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
 import { Child } from '@app/types';
+import { theme } from '@app/theme';
 
 type ComponentWithPageLayout = AppProps & {
     Component: AppProps['Component'] & {
@@ -10,7 +11,7 @@ type ComponentWithPageLayout = AppProps & {
 };
 
 const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
         {Component.Layout ? (
             <Component.Layout>
                 <Component {...pageProps} />
