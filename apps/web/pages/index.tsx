@@ -11,11 +11,13 @@ import {
     Button,
     Text,
     HStack,
+    useDisclosure,
 } from '@chakra-ui/react';
 import * as Yup from 'yup';
-import { userLogin } from '@app/components/validator';
+import { userLogin } from '@app/views/validator';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { CreatUserModal } from '@app/views/signup';
 
 type UserInput = Yup.InferType<typeof userLogin>;
 
@@ -29,12 +31,15 @@ const Index = () => {
         resolver: yupResolver(userLogin),
     });
 
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
     const userSubmit: SubmitHandler<UserInput> = (data) => {
         console.log(data);
     };
 
     return (
         <Flex p="20px" pl="40px" h="100vh">
+            <CreatUserModal isOpen={isOpen} onClose={onClose} />
             <Image src="side.jpg" borderRadius="lg" display={{ base: 'none', md: 'block' }} />
             <VStack w="100%">
                 <Heading
@@ -83,6 +88,7 @@ const Index = () => {
                         <Text
                             color="blue"
                             _hover={{ cursor: 'pointer', textDecoration: 'underline' }}
+                            onClick={() => onOpen()}
                         >
                             signup
                         </Text>
