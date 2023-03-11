@@ -18,6 +18,9 @@ model User {
   password   String
   bio        String?
   coverimage String?
+  instagram  String?
+  twitter    String?
+  dob        DateTime
   Friends    Friends[]
 }
 

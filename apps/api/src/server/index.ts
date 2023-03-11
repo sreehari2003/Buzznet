@@ -2,10 +2,15 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import pino from 'pino-http';
 import cors from 'cors';
+import dotenv from 'dotenv';
 
 import { AppError } from '../utils';
+import { userRouter } from '../router';
 
 export const server: Application = express();
+// loading env files
+dotenv.config();
+
 export const prisma = new PrismaClient();
 server.use(pino);
 
@@ -18,6 +23,8 @@ async function main() {
 
 main()
     .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.log('Error in connecting database');
         throw e;
     })
     .finally(async () => {
@@ -32,6 +39,13 @@ server.use(
     }),
 );
 server.use(express.json());
+server.get('/', (req: Request, res: Response) => {
+    res.status(201).json({
+        ok: true,
+        message: 'app is running successfully',
+    });
+});
+server.use('/api/v1', userRouter);
 
 server.all('*', (req: Request, _res: Response, next: NextFunction) => {
     next(new AppError(`The requested page ${req.originalUrl} was not found`, 404));
