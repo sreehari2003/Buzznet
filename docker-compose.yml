@@ -1,26 +1,17 @@
-version: "3"
-# service is meant to describe the docker services cureently running
+version: '3.8'
+
 services:
-  node-app:
-  # means docker build
-    build:
-      context: .
-      args:
-        NODE_ENV: development
-    ports:
-      - "8000:8000"
-    volumes:
-        - ./:/app
-        - /app/node_modules
-    env_file:
-      - ./.env
-  db:
-    image: mongo
+  mongo:
+    image: mongo:latest
+    container_name: my_mongo
+    restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=SREEHARI
       - MONGO_INITDB_ROOT_PASSWORD=123456789
+    ports:
+      - "27017:27017"
     volumes:
-      - monogo_db:/data/db
-## refering the named mongodb volume globally
+      - mongodb_data:/data/db
+
 volumes:
-  mongo_db: 
+  mongodb_data:
