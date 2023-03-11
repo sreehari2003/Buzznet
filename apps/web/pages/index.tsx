@@ -44,10 +44,11 @@ const Index = () => {
             <VStack w="100%">
                 <Heading
                     textAlign="center"
-                    fontSize="100px"
+                    fontSize={{ base: '60px', md: '100px' }}
                     bg="linear-gradient(179.2deg, rgb(21, 21, 212) 0.9%, rgb(53, 220, 243) 95.5%)"
                     bgClip="text"
                     mb="40px"
+                    mt={{ base: '40px', md: 'none' }}
                 >
                     Buzznet
                 </Heading>
