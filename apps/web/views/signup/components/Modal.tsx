@@ -14,11 +14,14 @@ import {
     Textarea,
     Flex,
     FormErrorMessage,
+    useToast,
 } from '@chakra-ui/react';
 import { InferType } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Profile } from '@app/views/validator';
+import { buzzNetAPI } from '@app/config';
+import { useRouter } from 'next/router';
 
 interface Prop {
     isOpen: boolean;
@@ -37,9 +40,33 @@ export const CreatUserModal = ({ isOpen, onClose }: Prop) => {
         mode: 'onSubmit',
         resolver: yupResolver(Profile),
     });
+    const toast = useToast();
+    const router = useRouter();
 
-    const handleFormData: SubmitHandler<ProfileForm> = (data) => {
-        console.log(data);
+    const handleFormData: SubmitHandler<ProfileForm> = async (data) => {
+        try {
+            const { data: res } = await buzzNetAPI.post('/signup', data);
+            if (!res.ok) {
+                throw new Error(res.message);
+            }
+            toast({
+                title: 'account creation succesfull your account.',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            });
+            router.push(`${res.username}`);
+        } catch {
+            toast({
+                title: 'Couldnt create your account.',
+                description: 'user name already exists',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+        } finally {
+            onClose();
+        }
     };
 
     return (

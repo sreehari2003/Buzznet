@@ -5,5 +5,5 @@ import { createUser, isUserNameExist, userLogin } from '../controller/user.contr
 export const userRouter: Router = Router();
 
 userRouter.post('/signup', createUser);
-userRouter.post('./login', userLogin);
-userRouter.post('/username', isUserNameExist);
+userRouter.post('/login', userLogin);
+userRouter.get('/username', isUserNameExist);
