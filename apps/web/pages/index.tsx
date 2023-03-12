@@ -20,6 +20,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CreatUserModal } from '@app/views/signup';
 import { buzzNetAPI } from '@app/config';
+import { useRouter } from 'next/router';
 
 type UserInput = Yup.InferType<typeof userLogin>;
 
@@ -34,15 +35,16 @@ const Index = () => {
     });
 
     const toast = useToast();
-
+    const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const userSubmit: SubmitHandler<UserInput> = async (data) => {
         try {
             const { data: res } = await buzzNetAPI.post('/login', data);
-            if (res.ok) {
+            if (!res.ok) {
                 throw new Error(res.message);
             }
+            router.push(`${res.username}`);
         } catch {
             toast({
                 title: 'Couldnt find your account.',

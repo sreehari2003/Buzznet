@@ -43,6 +43,7 @@ export const createUser: RequestHandler = wrapAsync(
 export const userLogin: RequestHandler = wrapAsync(
     async (req: Request, res: Response, next: NextFunction) => {
         const { password, username } = req.body;
+
         const existUser = await prisma.user.findUnique({
             where: {
                 username,

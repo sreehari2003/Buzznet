@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import express, { Application, Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import pino from 'pino-http';
@@ -7,12 +8,12 @@ import dotenv from 'dotenv';
 import { AppError } from '../utils';
 import { userRouter } from '../router';
 
-export const server: Application = express();
 // loading env files
 dotenv.config();
+const server: Application = express();
+server.use(pino());
 
 export const prisma = new PrismaClient();
-server.use(pino);
 
 async function main() {
     // Connect the client
@@ -65,3 +66,5 @@ server.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
         message: err.message,
     });
 });
+
+export default server;

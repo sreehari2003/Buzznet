@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { server } from './server';
+import server from './server';
 
 // loading env files
 dotenv.config();

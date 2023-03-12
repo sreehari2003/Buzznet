@@ -6,6 +6,6 @@ export const Profile = Yup.object({
     username: Yup.string().required(),
     bio: Yup.string().required(),
     instagram: Yup.string().required(),
-    twitter: Yup.string().required(),
+    twitter: Yup.string(),
     dob: Yup.date().required(),
 });
