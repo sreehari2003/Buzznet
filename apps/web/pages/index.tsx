@@ -11,6 +11,7 @@ import {
     Button,
     Text,
     HStack,
+    useToast,
     useDisclosure,
 } from '@chakra-ui/react';
 import * as Yup from 'yup';
@@ -18,6 +19,7 @@ import { userLogin } from '@app/views/validator';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CreatUserModal } from '@app/views/signup';
+import { buzzNetAPI } from '@app/config';
 
 type UserInput = Yup.InferType<typeof userLogin>;
 
@@ -31,10 +33,25 @@ const Index = () => {
         resolver: yupResolver(userLogin),
     });
 
+    const toast = useToast();
+
     const { isOpen, onOpen, onClose } = useDisclosure();
 
-    const userSubmit: SubmitHandler<UserInput> = (data) => {
-        console.log(data);
+    const userSubmit: SubmitHandler<UserInput> = async (data) => {
+        try {
+            const { data: res } = await buzzNetAPI.post('/login', data);
+            if (res.ok) {
+                throw new Error(res.message);
+            }
+        } catch {
+            toast({
+                title: 'Couldnt find your account.',
+                description: 'inavalid username or password',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+        }
     };
 
     return (

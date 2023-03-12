@@ -1,7 +1,9 @@
 import { Router } from 'express';
-import { createUser, isUserNameExist } from '../controller/user.controller';
+// eslint-disable-next-line import/no-cycle
+import { createUser, isUserNameExist, userLogin } from '../controller/user.controller';
 
 export const userRouter: Router = Router();
 
-userRouter.post('/user', createUser);
+userRouter.post('/signup', createUser);
+userRouter.post('./login', userLogin);
 userRouter.post('/username', isUserNameExist);
