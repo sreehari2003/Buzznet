@@ -1,13 +1,12 @@
 import React from 'react';
 import { UserLayout } from '@app/layout';
 import { NextPageWithLayout } from 'next';
-import { VStack, Heading, HStack, Box, Avatar, Flex, Button } from '@chakra-ui/react';
-import { Sidebar } from '@app/views/profile';
+import { VStack, Heading, HStack, Box, Avatar, Flex, Button, Divider } from '@chakra-ui/react';
+import { FriendTabs } from '@app/views/profile';
 
 const Page: NextPageWithLayout = () => (
-    <HStack>
-        <Sidebar />
-        <VStack w="100%" minH="90vh">
+    <HStack m={{ base: 'none', md: '100px' }} mt="20px">
+        <VStack w="100%" minH="60vh">
             <Box w="100%" display="flex" justifyContent="space-between" flexDir="column">
                 <Flex justifyContent="space-between" p="4" flexDir={{ base: 'column', md: 'row' }}>
                     <HStack>
@@ -52,6 +51,8 @@ const Page: NextPageWithLayout = () => (
                         </Button>
                     </Flex>
                 </Flex>
+                <Divider />
+                <FriendTabs />
             </Box>
         </VStack>
     </HStack>

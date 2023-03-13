@@ -1,1 +1,1 @@
-export { Sidebar } from './components/SIdebar';
+export { FriendTabs } from './components/SIdebar';
