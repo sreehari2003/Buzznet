@@ -22,19 +22,22 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Profile } from '@app/views/validator';
 import { buzzNetAPI } from '@app/config';
 import { useRouter } from 'next/router';
+import { useAuth } from '@app/hooks';
 
 interface Prop {
     isOpen: boolean;
     onClose: () => void;
 }
 
-type ProfileForm = InferType<typeof Profile>;
+export type ProfileForm = InferType<typeof Profile>;
 
 export const CreatUserModal = ({ isOpen, onClose }: Prop) => {
+    const { setUser } = useAuth();
     const {
         register,
         handleSubmit,
         watch,
+        reset,
         formState: { errors },
     } = useForm<ProfileForm>({
         mode: 'onSubmit',
@@ -50,12 +53,13 @@ export const CreatUserModal = ({ isOpen, onClose }: Prop) => {
                 throw new Error(res.message);
             }
             toast({
-                title: 'account creation succesfull your account.',
+                title: 'account created succesfully',
                 status: 'success',
                 duration: 9000,
                 isClosable: true,
             });
-            router.push(`${res.username}`);
+            setUser(res.data);
+            router.push(`/${res.data.username}`);
         } catch {
             toast({
                 title: 'Couldnt create your account.',
@@ -66,6 +70,7 @@ export const CreatUserModal = ({ isOpen, onClose }: Prop) => {
             });
         } finally {
             onClose();
+            reset();
         }
     };
 

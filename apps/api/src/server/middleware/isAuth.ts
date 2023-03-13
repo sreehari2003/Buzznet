@@ -1,6 +1,7 @@
+/* eslint-disable import/no-cycle */
 // This function is to check whether the user is authenticated or not
 
-import { NextFunction, Response, Request, RequestHandler } from 'express';
+import { NextFunction, Response, RequestHandler, User } from 'express';
 import jwt from 'jsonwebtoken';
 import { wrapAsync, AppError } from '../../utils';
 import { prisma } from '../index';
@@ -11,7 +12,7 @@ interface JwtPayload {
 }
 
 export const isAuth: RequestHandler = wrapAsync(
-    async (req: Request, _res: Response, next: NextFunction) => {
+    async (req: User, _res: Response, next: NextFunction) => {
         let token: string;
         if (
             req.headers &&
@@ -24,7 +25,8 @@ export const isAuth: RequestHandler = wrapAsync(
             return next(new AppError('User not logged in', 401));
         }
         const { id } = jwt.verify(token, ENV.JWT_SECRET) as unknown as JwtPayload;
-        if (id) {
+
+        if (!id) {
             return next(new AppError('Invalid user id, please login again', 401));
         }
 
@@ -34,7 +36,8 @@ export const isAuth: RequestHandler = wrapAsync(
             },
         });
         if (extistingUser) {
-            return extistingUser;
+            req.user = extistingUser;
+            next();
         }
 
         return next(new AppError('Invalid user id, please login again', 401));

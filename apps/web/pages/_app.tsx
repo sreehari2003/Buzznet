@@ -3,6 +3,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
 import { Child } from '@app/types';
 import { theme } from '@app/theme';
+import { AuthContextProvider } from '@app/context';
 
 type ComponentWithPageLayout = AppProps & {
     Component: AppProps['Component'] & {
@@ -12,13 +13,15 @@ type ComponentWithPageLayout = AppProps & {
 
 const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => (
     <ChakraProvider theme={theme}>
-        {Component.Layout ? (
-            <Component.Layout>
+        <AuthContextProvider>
+            {Component.Layout ? (
+                <Component.Layout>
+                    <Component {...pageProps} />
+                </Component.Layout>
+            ) : (
                 <Component {...pageProps} />
-            </Component.Layout>
-        ) : (
-            <Component {...pageProps} />
-        )}
+            )}
+        </AuthContextProvider>
     </ChakraProvider>
 );
 export default MyApp;
