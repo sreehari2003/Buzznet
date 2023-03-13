@@ -5,7 +5,7 @@ export const Profile = Yup.object({
     password: Yup.string().required(),
     username: Yup.string().required(),
     bio: Yup.string().required(),
-    instagram: Yup.string().required(),
+    instagram: Yup.string(),
     twitter: Yup.string(),
     dob: Yup.date().required(),
 });

@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 import express, { Application, Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
-import pino from 'pino-http';
+// import pino from 'pino-http';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
@@ -11,7 +11,7 @@ import { userRouter } from '../router';
 // loading env files
 dotenv.config();
 const server: Application = express();
-server.use(pino());
+// server.use(pino());
 
 export const prisma = new PrismaClient();
 

@@ -21,10 +21,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { CreatUserModal } from '@app/views/signup';
 import { buzzNetAPI } from '@app/config';
 import { useRouter } from 'next/router';
+import { useAuth } from '@app/hooks';
 
 type UserInput = Yup.InferType<typeof userLogin>;
 
 const Index = () => {
+    const { setUser } = useAuth();
     const {
         register,
         handleSubmit,
@@ -44,6 +46,7 @@ const Index = () => {
             if (!res.ok) {
                 throw new Error(res.message);
             }
+            setUser(res);
             router.push(`${res.username}`);
         } catch {
             toast({

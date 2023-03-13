@@ -1,3 +1,6 @@
+import { buzzNetAPI } from '@app/config';
+import { useAuth } from '@app/hooks';
+import { debounce } from '@app/utils/debounce';
 import {
     Avatar,
     Flex,
@@ -16,12 +19,44 @@ import {
     ModalOverlay,
 } from '@chakra-ui/react';
 import Link from 'next/link';
-import { useRef } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useRef, useState } from 'react';
 import { BiSearchAlt } from 'react-icons/bi';
 
 export const UserTopbar = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [search, setSearch] = useState<any>(null);
+    console.log(search);
+
+    const router = useRouter();
     const ref = useRef<HTMLDivElement>(null);
+    const { logOut, user } = useAuth();
+
+    const myProfile = () => {
+        router.push(`/${user?.username}`);
+    };
+
+    const searchUsers = async (id: string) => {
+        try {
+            const { data: resp } = await buzzNetAPI.get(`/user?username=${id}`);
+            if (!resp.ok) {
+                throw new Error();
+            }
+            setSearch(resp.data);
+        } catch {
+            /* empty */
+        }
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const loadUsers = useCallback(
+        debounce((inputValue: string, callback: (options: any) => void) => {
+            searchUsers(inputValue).then((options) => {
+                callback(options);
+            });
+        }),
+        [],
+    );
 
     return (
         <Flex
@@ -42,7 +77,12 @@ export const UserTopbar = () => {
                             <InputLeftElement pointerEvents="none">
                                 <BiSearchAlt color="gray.300" />
                             </InputLeftElement>
-                            <Input type="tel" placeholder="find friends" onClick={() => onOpen()} />
+                            <Input
+                                type="tel"
+                                placeholder="find friends"
+                                onClick={() => onOpen()}
+                                onChange={(e) => loadUsers(e.target.value, searchUsers)}
+                            />
                         </InputGroup>
                     </ModalHeader>
                 </ModalContent>
@@ -61,13 +101,18 @@ export const UserTopbar = () => {
                 <InputLeftElement pointerEvents="none">
                     <BiSearchAlt color="gray.300" />
                 </InputLeftElement>
-                <Input type="tel" placeholder="find friends" onClick={() => onOpen()} />
+                <Input
+                    type="tel"
+                    placeholder="find friends"
+                    onClick={() => onOpen()}
+                    onChange={(e) => loadUsers(e.target.value, searchUsers)}
+                />
             </InputGroup>
             <Menu>
                 <MenuButton as={Avatar} _hover={{ cursor: 'pointer' }} />
                 <MenuList>
-                    <MenuItem>My Profile</MenuItem>
-                    <MenuItem>Logout</MenuItem>
+                    <MenuItem onClick={myProfile}> Profile</MenuItem>
+                    <MenuItem onClick={logOut}>Logout</MenuItem>
                 </MenuList>
             </Menu>
         </Flex>
