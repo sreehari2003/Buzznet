@@ -1,2 +1,2 @@
 export { userLogin } from './Login';
-export { Profile } from './Profile';
+export { Profile, UpdateProfile } from './Profile';

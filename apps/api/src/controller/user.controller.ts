@@ -113,3 +113,64 @@ export const verifyUser: RequestHandler = wrapAsync(
         return next(new AppError('Invalid userid', 404));
     },
 );
+
+export const updateUser: RequestHandler = wrapAsync(
+    async (req: User, res: Response, next: NextFunction) => {
+        const id = req?.user?.id;
+        if (!req.user || id) {
+            return next(new AppError('Invalid userid', 404));
+        }
+
+        const update = await prisma.user.update({
+            where: {
+                id: req.user?.id,
+            },
+            data: {
+                ...req.body,
+            },
+        });
+
+        return res.status(201).json(serverResponse(`user updatedsuccessfully`, update));
+    },
+);
+
+export const addFriend: RequestHandler = wrapAsync(
+    async (req: User, res: Response, next: NextFunction) => {
+        const id = req?.user?.id;
+        const { to } = req.body;
+        if (!to) {
+            return next(new AppError('Invalid friend request', 404));
+        }
+        const data = await prisma.user.update({
+            where: {
+                id,
+            },
+            data: {
+                Friends: {
+                    create: {
+                        status: 'PENDING',
+                        userName: to,
+                        source: 'SEND',
+                    },
+                },
+            },
+        });
+
+        await prisma.user.update({
+            where: {
+                username: to,
+            },
+            data: {
+                Friends: {
+                    create: {
+                        status: 'PENDING',
+                        userName: req.user.username,
+                        source: 'RECIVED',
+                    },
+                },
+            },
+        });
+
+        return res.status(201).json(serverResponse(`user updatedsuccessfully`, data));
+    },
+);
