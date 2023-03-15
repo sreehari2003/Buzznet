@@ -26,7 +26,6 @@ import { BiSearchAlt } from 'react-icons/bi';
 export const UserTopbar = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [search, setSearch] = useState<any>(null);
-    console.log(search);
 
     const router = useRouter();
     const ref = useRef<HTMLDivElement>(null);

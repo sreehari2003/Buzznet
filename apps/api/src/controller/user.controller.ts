@@ -117,20 +117,26 @@ export const verifyUser: RequestHandler = wrapAsync(
 export const updateUser: RequestHandler = wrapAsync(
     async (req: User, res: Response, next: NextFunction) => {
         const id = req?.user?.id;
-        if (!req.user || id) {
+
+        if (!id) {
             return next(new AppError('Invalid userid', 404));
+        }
+        if (req.user.username === req.body.username) {
+            req.body.username = undefined;
+            req.body.password = undefined;
         }
 
         const update = await prisma.user.update({
             where: {
-                id: req.user?.id,
+                id,
             },
             data: {
                 ...req.body,
+                id: undefined,
             },
         });
-
-        return res.status(201).json(serverResponse(`user updatedsuccessfully`, update));
+        update.password = '';
+        return res.status(201).json(serverResponse(`user updated successfully`, update));
     },
 );
 
@@ -171,6 +177,54 @@ export const addFriend: RequestHandler = wrapAsync(
             },
         });
 
-        return res.status(201).json(serverResponse(`user updatedsuccessfully`, data));
+        return res.status(201).json(serverResponse(`freind request was sent`, data));
+    },
+);
+
+export const acceptFriend: RequestHandler = wrapAsync(
+    async (req: User, res: Response, next: NextFunction) => {
+        const id = req?.user?.id;
+        const { from } = req.body;
+        if (!id) {
+            return next(new AppError('Invalid friend request', 404));
+        }
+        const data = await prisma.user.update({
+            where: {
+                id,
+            },
+            data: {
+                Friends: {
+                    update: {
+                        where: {
+                            userName: from,
+                        },
+                        data: {
+                            status: 'CONFIRMED',
+                        },
+                    },
+                },
+            },
+        });
+
+        // changind data from the db of the guy who swnd request
+        await prisma.user.update({
+            where: {
+                username: from,
+            },
+            data: {
+                Friends: {
+                    update: {
+                        where: {
+                            userName: req.user.username,
+                        },
+                        data: {
+                            status: 'CONFIRMED',
+                        },
+                    },
+                },
+            },
+        });
+
+        return res.status(201).json(serverResponse(`freind request was accepted`, data));
     },
 );

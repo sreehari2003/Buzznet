@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Flex,
     FormControl,
@@ -26,7 +26,7 @@ import { useAuth } from '@app/hooks';
 type UserInput = Yup.InferType<typeof userLogin>;
 
 const Index = () => {
-    const { setUser } = useAuth();
+    const { setUser, user } = useAuth();
     const {
         register,
         handleSubmit,
@@ -39,6 +39,12 @@ const Index = () => {
     const toast = useToast();
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    useEffect(() => {
+        if (user) {
+            router.push(`/${user.username}`);
+        }
+    }, [user, router]);
 
     const userSubmit: SubmitHandler<UserInput> = async (data) => {
         try {

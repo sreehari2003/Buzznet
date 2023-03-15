@@ -8,6 +8,7 @@ import {
     verifyUser,
     updateUser,
     addFriend,
+    acceptFriend,
 } from '../controller/user.controller';
 import { isAuth } from '../server/middleware/isAuth';
 
@@ -19,3 +20,4 @@ userRouter.route('/user').get(isUserNameExist).patch(isAuth, updateUser);
 userRouter.get('/reset', clearDB);
 userRouter.get('/me', isAuth, verifyUser);
 userRouter.post('/add', addFriend);
+userRouter.post('/accept', acceptFriend);
