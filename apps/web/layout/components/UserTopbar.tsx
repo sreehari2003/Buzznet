@@ -112,6 +112,7 @@ export const UserTopbar = () => {
                 <MenuButton as={Avatar} _hover={{ cursor: 'pointer' }} />
                 <MenuList>
                     <MenuItem onClick={myProfile}> Profile</MenuItem>
+                    <MenuItem onClick={myProfile}>Friend requests</MenuItem>
                     <MenuItem onClick={logOut}>Logout</MenuItem>
                 </MenuList>
             </Menu>

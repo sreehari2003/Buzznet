@@ -11,8 +11,9 @@ import {
     Button,
     Divider,
     useToast,
+    useDisclosure,
 } from '@chakra-ui/react';
-import { FriendTabs } from '@app/views/profile';
+import { FriendTabs, EditProfile } from '@app/views/profile';
 import { useAuth } from '@app/hooks';
 import { useRouter } from 'next/router';
 import { ProfileForm } from '@app/views/signup';
@@ -23,6 +24,7 @@ const Page: NextPageWithLayout = () => {
     const [userInfo, setUser] = useState<ProfileForm | null>(null);
     const { user, setLoading } = useAuth();
     const router = useRouter();
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     useEffect(() => {
         const { id } = router.query;
@@ -74,6 +76,7 @@ const Page: NextPageWithLayout = () => {
 
     return (
         <HStack m={{ base: 'none', md: '100px' }} mt="20px">
+            <EditProfile onClose={onClose} isOpen={isOpen} />
             <VStack w="100%" minH="60vh">
                 <Box w="100%" display="flex" justifyContent="space-between" flexDir="column">
                     <Flex
@@ -139,7 +142,7 @@ const Page: NextPageWithLayout = () => {
                             )}
 
                             {user?.username === userInfo?.username && (
-                                <Button colorScheme="blue" variant="outline">
+                                <Button colorScheme="blue" variant="outline" onClick={onOpen}>
                                     edit profile
                                 </Button>
                             )}

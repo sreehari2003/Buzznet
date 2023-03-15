@@ -9,3 +9,11 @@ export const Profile = Yup.object({
     twitter: Yup.string(),
     dob: Yup.date().required(),
 });
+
+export const UpdateProfile = Yup.object({
+    name: Yup.string().required(),
+    username: Yup.string().required(),
+    bio: Yup.string().required(),
+    instagram: Yup.string(),
+    twitter: Yup.string(),
+});

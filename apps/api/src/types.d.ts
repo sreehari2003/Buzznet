@@ -2,6 +2,8 @@ import { Request } from 'express';
 
 declare module 'express' {
     interface User extends Request {
-        user: unknown;
+        [x: string]: any;
+        req: any;
+        user: any;
     }
 }

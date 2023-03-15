@@ -35,6 +35,7 @@ export const isAuth: RequestHandler = wrapAsync(
                 id,
             },
         });
+
         if (extistingUser) {
             req.user = extistingUser;
             next();
