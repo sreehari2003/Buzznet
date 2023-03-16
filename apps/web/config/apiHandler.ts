@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import Cookies from 'js-cookie';
 
 export const buzzNetAPI = Axios.create({
     baseURL: 'http://localhost:8000/api/v1',
@@ -8,3 +9,5 @@ export const buzzNetAPI = Axios.create({
     },
     withCredentials: true,
 });
+
+buzzNetAPI.defaults.headers.common.authorization = `Bearer ${Cookies.get('jwtID')}`;

@@ -12,6 +12,7 @@ interface JwtPayload {
 }
 
 export const isAuth: RequestHandler = wrapAsync(
+    // eslint-disable-next-line consistent-return
     async (req: User, _res: Response, next: NextFunction) => {
         let token: string;
         if (
@@ -36,11 +37,10 @@ export const isAuth: RequestHandler = wrapAsync(
             },
         });
 
-        if (extistingUser) {
-            req.user = extistingUser;
-            next();
+        if (!extistingUser) {
+            return next(new AppError('Invalid user id, please login again', 401));
         }
-
-        return next(new AppError('Invalid user id, please login again', 401));
+        req.user = extistingUser;
+        next();
     },
 );

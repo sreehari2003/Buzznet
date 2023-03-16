@@ -95,6 +95,9 @@ const Page: NextPageWithLayout = () => {
                                 <Heading fontSize={{ base: '20px', md: '40px' }}>
                                     {userInfo?.name}
                                 </Heading>
+                                <Heading fontSize={{ base: '15px', md: '25px' }}>
+                                    username: {userInfo?.username}
+                                </Heading>
                                 <Box w="300px" _hover={{ cursor: 'pointer' }}>
                                     {userInfo?.bio}
                                 </Box>

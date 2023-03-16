@@ -23,6 +23,7 @@ import { UpdateProfile } from '@app/views/validator';
 import { buzzNetAPI } from '@app/config';
 import { useRouter } from 'next/router';
 import { useAuth } from '@app/hooks';
+import { useEffect } from 'react';
 
 interface Prop {
     isOpen: boolean;
@@ -32,7 +33,7 @@ interface Prop {
 export type ProfileForm = InferType<typeof UpdateProfile>;
 
 export const EditProfile = ({ isOpen, onClose }: Prop) => {
-    const { setUser } = useAuth();
+    const { setUser, user } = useAuth();
     const {
         register,
         handleSubmit,
@@ -42,7 +43,19 @@ export const EditProfile = ({ isOpen, onClose }: Prop) => {
     } = useForm<ProfileForm>({
         mode: 'onSubmit',
         resolver: yupResolver(UpdateProfile),
+        defaultValues: {
+            ...user,
+        },
     });
+
+    // changing form values wheneever  from data changes
+    useEffect(() => {
+        reset({
+            ...user,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
+
     const toast = useToast();
     const router = useRouter();
 
