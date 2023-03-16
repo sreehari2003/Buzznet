@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { buzzNetAPI } from '@app/config';
 import { useAuth } from '@app/hooks';
 import { debounce } from '@app/utils/debounce';
@@ -17,15 +18,24 @@ import {
     ModalContent,
     ModalHeader,
     ModalOverlay,
+    VStack,
+    AlertTitle,
+    Alert,
+    AlertIcon,
+    AlertDescription,
+    CircularProgress,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useRef, useState } from 'react';
 import { BiSearchAlt } from 'react-icons/bi';
+import { UserCard } from '@app/components/cards';
 
 export const UserTopbar = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+
     const [search, setSearch] = useState<any>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const router = useRouter();
     const ref = useRef<HTMLDivElement>(null);
@@ -37,25 +47,30 @@ export const UserTopbar = () => {
 
     const searchUsers = async (id: string) => {
         try {
+            setLoading(true);
             const { data: resp } = await buzzNetAPI.get(`/user?username=${id}`);
             if (!resp.ok) {
                 throw new Error();
             }
             setSearch(resp.data);
         } catch {
-            /* empty */
+            setSearch(null);
+        } finally {
+            setLoading(false);
         }
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const loadUsers = useCallback(
-        debounce((inputValue: string, callback: (options: any) => void) => {
-            searchUsers(inputValue).then((options) => {
-                callback(options);
-            });
+        debounce((inputValue: string) => {
+            searchUsers(inputValue);
         }),
         [],
     );
+    const closeSearchModal = () => {
+        setSearch(null);
+        onClose();
+    };
 
     return (
         <Flex
@@ -68,8 +83,14 @@ export const UserTopbar = () => {
             px={{ base: '20px', md: '100px' }}
             ref={ref}
         >
-            <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} finalFocusRef={ref}>
+            <Modal
+                blockScrollOnMount={false}
+                isOpen={isOpen}
+                onClose={closeSearchModal}
+                finalFocusRef={ref}
+            >
                 <ModalOverlay />
+
                 <ModalContent w="900px">
                     <ModalHeader>
                         <InputGroup w="100%">
@@ -84,6 +105,19 @@ export const UserTopbar = () => {
                             />
                         </InputGroup>
                     </ModalHeader>
+                    <VStack p="3">
+                        {search?.username ? (
+                            <UserCard name={search?.username} />
+                        ) : loading ? (
+                            <CircularProgress isIndeterminate color="green.300" />
+                        ) : (
+                            <Alert status="error">
+                                <AlertIcon />
+                                <AlertTitle>User not found</AlertTitle>
+                                <AlertDescription>user does not exist</AlertDescription>
+                            </Alert>
+                        )}
+                    </VStack>
                 </ModalContent>
             </Modal>
             <Link href="/">
@@ -111,7 +145,7 @@ export const UserTopbar = () => {
                 <MenuButton as={Avatar} _hover={{ cursor: 'pointer' }} />
                 <MenuList>
                     <MenuItem onClick={myProfile}> Profile</MenuItem>
-                    <MenuItem onClick={myProfile}>Friend requests</MenuItem>
+
                     <MenuItem onClick={logOut}>Logout</MenuItem>
                 </MenuList>
             </Menu>
