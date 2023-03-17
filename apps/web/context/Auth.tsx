@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Cookies from 'js-cookie';
 import { buzzNetAPI } from '@app/config';
-import { ProfileForm } from '@app/views/signup';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
+import { User } from '@app/pages/[id]';
 
 export interface AuthCtx {
     logOut: () => void;
-    user: ProfileForm | null;
+    user: User | null;
     isLoading: boolean;
-    setUser: React.Dispatch<ProfileForm | null>;
+    setUser: React.Dispatch<User | null>;
     setLoading: React.Dispatch<boolean>;
 }
 export const AuthContext = React.createContext<AuthCtx>({
@@ -25,8 +25,22 @@ interface Child {
 
 export const AuthContextProvider = ({ children }: Child) => {
     const router = useRouter();
-    const [user, setUser] = useState<ProfileForm | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [isLoading, setLoading] = useState<boolean>(false);
+
+    // listening for route change events
+    Router.events.on('routeChangeStart', () => {
+        // when route change loading screen popup
+        setLoading(true);
+    });
+    Router.events.on('routeChangeComplete', () => {
+        setLoading(false);
+    });
+    const logOut = () => {
+        setUser(null);
+        Cookies.remove('jwtID');
+        router.push('/');
+    };
 
     useEffect(() => {
         async function loadUserFromCookies() {
@@ -46,7 +60,7 @@ export const AuthContextProvider = ({ children }: Child) => {
                     }
                 }
             } catch {
-                router.push('/');
+                logOut();
             } finally {
                 setLoading(false);
             }
@@ -54,11 +68,6 @@ export const AuthContextProvider = ({ children }: Child) => {
         loadUserFromCookies();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    const logOut = () => {
-        setUser(null);
-        Cookies.remove('jwtID');
-        window.location.reload();
-    };
 
     const contextValue = useMemo(
         () => ({

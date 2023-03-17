@@ -21,7 +21,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { UpdateProfile } from '@app/views/validator';
 import { buzzNetAPI } from '@app/config';
-import { useRouter } from 'next/router';
 import { useAuth } from '@app/hooks';
 import { useEffect } from 'react';
 
@@ -57,7 +56,6 @@ export const EditProfile = ({ isOpen, onClose }: Prop) => {
     }, [user]);
 
     const toast = useToast();
-    const router = useRouter();
 
     const backToDefault = () => {
         onClose();
@@ -66,7 +64,10 @@ export const EditProfile = ({ isOpen, onClose }: Prop) => {
 
     const handleFormData: SubmitHandler<ProfileForm> = async (data) => {
         try {
-            const { data: res } = await buzzNetAPI.patch('/user', data);
+            const { data: res } = await buzzNetAPI.patch('/user', {
+                ...data,
+                Friends: undefined,
+            });
             if (!res.ok) {
                 throw new Error(res.message);
             }
@@ -77,7 +78,7 @@ export const EditProfile = ({ isOpen, onClose }: Prop) => {
                 isClosable: true,
             });
             setUser(res.data);
-            router.push(`/${res.data.username}`);
+            onClose();
         } catch {
             toast({
                 title: 'Couldnt update your account info.',

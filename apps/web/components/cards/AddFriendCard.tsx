@@ -1,11 +1,12 @@
-import { Avatar, Button, Flex, Heading } from '@chakra-ui/react';
+import { Button, Flex, Heading, Link } from '@chakra-ui/react';
 import React from 'react';
 
 interface Prop {
     name: string;
+    onClick: (state: string) => void;
 }
 
-export const AddFriendCard = ({ name }: Prop) => (
+export const AddFriendCard = ({ name, onClick }: Prop) => (
     <Flex
         bg="#edede9"
         px="6"
@@ -17,8 +18,11 @@ export const AddFriendCard = ({ name }: Prop) => (
         borderRadius="lg"
         _hover={{ cursor: 'pointer' }}
     >
-        <Avatar />
-        <Heading fontSize="xl">{name}</Heading>
-        <Button>confirm</Button>
+        <Link href={`/${name}`}>
+            <Heading fontSize="xl">{name}</Heading>
+        </Link>
+        <Button colorScheme="blackAlpha" onClick={() => onClick(name)}>
+            confirm
+        </Button>
     </Flex>
 );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { UserLayout } from '@app/layout';
 import { NextPageWithLayout } from 'next';
 import {
@@ -18,20 +18,48 @@ import { useAuth } from '@app/hooks';
 import { useRouter } from 'next/router';
 import { ProfileForm } from '@app/views/signup';
 import { buzzNetAPI } from '@app/config';
+import { Loader } from '@app/layout/components/Loader';
+import Cookies from 'js-cookie';
+
+type Friend = {
+    id: string;
+    status: 'PENDING' | 'CONFIRMED';
+    userName: string;
+};
+
+export interface User extends ProfileForm {
+    Friends: Friend[] | null;
+}
 
 const Page: NextPageWithLayout = () => {
     const toast = useToast();
-    const [userInfo, setUser] = useState<ProfileForm | null>(null);
+    const [userInfo, setUser] = useState<User | null>(null);
     const { user, setLoading } = useAuth();
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const isOwnAccount = user?.username === userInfo?.username;
+
+    // using this to prevent the recomputation of number of friends
+    const numberOfFriends = useMemo(() => {
+        if (userInfo?.Friends) {
+            return userInfo.Friends.reduce(
+                (acc, el) => acc + (el.status === 'CONFIRMED' ? 1 : 0),
+                0,
+            );
+        }
+        return [];
+    }, [userInfo]);
+
+    const { id } = router.query;
 
     useEffect(() => {
-        const { id } = router.query;
-        if (id !== user?.username) {
+        if (!router.isReady) return;
+        if (router.isReady && id !== user?.username) {
             (async () => {
                 try {
                     setLoading(true);
+                    const token = Cookies.get('jwtID');
+                    buzzNetAPI.defaults.headers.common.authorization = `Bearer ${token}`;
                     const { data: resp } = await buzzNetAPI.get(`/user?username=${id}`);
                     if (!resp.ok) {
                         throw new Error();
@@ -46,8 +74,9 @@ const Page: NextPageWithLayout = () => {
         } else {
             setUser(user);
         }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [router]);
+    }, [router.isReady]);
 
     const addFriend = async () => {
         try {
@@ -73,6 +102,10 @@ const Page: NextPageWithLayout = () => {
             });
         }
     };
+
+    if (!router.isReady) {
+        return <Loader />;
+    }
 
     return (
         <HStack m={{ base: 'none', md: '100px' }} mt="20px">
@@ -102,7 +135,7 @@ const Page: NextPageWithLayout = () => {
                                     {userInfo?.bio}
                                 </Box>
                                 <Heading fontSize="15px" mt="10px" fontWeight="500">
-                                    240 friends
+                                    {numberOfFriends} friends
                                 </Heading>
                                 {user?.username !== userInfo?.username && (
                                     <Button
@@ -152,7 +185,7 @@ const Page: NextPageWithLayout = () => {
                         </Flex>
                     </Flex>
                     <Divider />
-                    <FriendTabs />
+                    <FriendTabs isOwnAccount={isOwnAccount} />
                 </Box>
             </VStack>
         </HStack>
