@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Cookies from 'js-cookie';
 import { buzzNetAPI } from '@app/config';
 import { ProfileForm } from '@app/views/signup';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 
 export interface AuthCtx {
     logOut: () => void;
@@ -27,6 +27,15 @@ export const AuthContextProvider = ({ children }: Child) => {
     const router = useRouter();
     const [user, setUser] = useState<ProfileForm | null>(null);
     const [isLoading, setLoading] = useState<boolean>(false);
+
+    // listening for route change events
+    Router.events.on('routeChangeStart', () => {
+        // when route change loading screen popup
+        setLoading(true);
+    });
+    Router.events.on('routeChangeComplete', () => {
+        setLoading(false);
+    });
 
     useEffect(() => {
         async function loadUserFromCookies() {
@@ -57,6 +66,7 @@ export const AuthContextProvider = ({ children }: Child) => {
     const logOut = () => {
         setUser(null);
         Cookies.remove('jwtID');
+        router.push('/');
         window.location.reload();
     };
 

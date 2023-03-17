@@ -228,3 +228,16 @@ export const acceptFriend: RequestHandler = wrapAsync(
         return res.status(201).json(serverResponse(`freind request was accepted`, data));
     },
 );
+
+export const getAllFreindRequest: RequestHandler = wrapAsync(async (req: User, res: Response) => {
+    const id = req?.user?.id;
+    const allFreindRequest = await prisma.user.findUnique({
+        where: {
+            id,
+        },
+        select: {
+            Friends: true,
+        },
+    });
+    return res.status(201).json(serverResponse(`freind requests`, allFreindRequest));
+});

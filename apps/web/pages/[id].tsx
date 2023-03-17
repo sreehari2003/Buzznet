@@ -25,6 +25,7 @@ const Page: NextPageWithLayout = () => {
     const { user, setLoading } = useAuth();
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const isOwnAccount = user?.username === userInfo?.username;
 
     useEffect(() => {
         const { id } = router.query;
@@ -152,7 +153,7 @@ const Page: NextPageWithLayout = () => {
                         </Flex>
                     </Flex>
                     <Divider />
-                    <FriendTabs />
+                    <FriendTabs isOwnAccount={isOwnAccount} />
                 </Box>
             </VStack>
         </HStack>

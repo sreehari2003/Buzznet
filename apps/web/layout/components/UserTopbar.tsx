@@ -22,7 +22,6 @@ import {
     AlertTitle,
     Alert,
     AlertIcon,
-    AlertDescription,
     CircularProgress,
 } from '@chakra-ui/react';
 import Link from 'next/link';
@@ -30,9 +29,11 @@ import { useRouter } from 'next/router';
 import { useCallback, useRef, useState } from 'react';
 import { BiSearchAlt } from 'react-icons/bi';
 import { UserCard } from '@app/components/cards';
+import { AddFriend } from './FriendReq';
 
 export const UserTopbar = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen: friendOpen, onOpen: friendOnOpen, onClose: friendoNcLose } = useDisclosure();
 
     const [search, setSearch] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(false);
@@ -83,6 +84,7 @@ export const UserTopbar = () => {
             px={{ base: '20px', md: '100px' }}
             ref={ref}
         >
+            <AddFriend isOpen={friendOpen} onClose={friendoNcLose} />
             <Modal
                 blockScrollOnMount={false}
                 isOpen={isOpen}
@@ -114,7 +116,6 @@ export const UserTopbar = () => {
                             <Alert status="error">
                                 <AlertIcon />
                                 <AlertTitle>User not found</AlertTitle>
-                                <AlertDescription>user does not exist</AlertDescription>
                             </Alert>
                         )}
                     </VStack>
@@ -145,7 +146,7 @@ export const UserTopbar = () => {
                 <MenuButton as={Avatar} _hover={{ cursor: 'pointer' }} />
                 <MenuList>
                     <MenuItem onClick={myProfile}> Profile</MenuItem>
-
+                    <MenuItem onClick={friendOnOpen}> Friend Requests</MenuItem>
                     <MenuItem onClick={logOut}>Logout</MenuItem>
                 </MenuList>
             </Menu>
