@@ -35,6 +35,9 @@ export const isAuth: RequestHandler = wrapAsync(
             where: {
                 id,
             },
+            include: {
+                Friends: true,
+            },
         });
 
         if (!extistingUser) {

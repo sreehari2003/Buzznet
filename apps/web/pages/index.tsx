@@ -22,10 +22,12 @@ import { CreatUserModal } from '@app/views/signup';
 import { buzzNetAPI } from '@app/config';
 import { useRouter } from 'next/router';
 import { useAuth } from '@app/hooks';
+import { NextPageWithLayout } from 'next';
+import { MainLayout } from '@app/layout';
 
 type UserInput = Yup.InferType<typeof userLogin>;
 
-const Index = () => {
+const Index: NextPageWithLayout = () => {
     const { setUser, user } = useAuth();
     const {
         register,
@@ -53,7 +55,7 @@ const Index = () => {
                 throw new Error(res.message);
             }
             setUser(res);
-            router.push(`${res.username}`);
+            router.push(`/${res.data.username}`);
         } catch {
             toast({
                 title: 'Couldnt find your account.',
@@ -127,5 +129,7 @@ const Index = () => {
         </Flex>
     );
 };
+
+Index.Layout = MainLayout;
 
 export default Index;

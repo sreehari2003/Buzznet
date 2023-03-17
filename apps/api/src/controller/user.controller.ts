@@ -50,6 +50,9 @@ export const userLogin: RequestHandler = wrapAsync(
             where: {
                 username,
             },
+            include: {
+                Friends: true,
+            },
         });
         if (!existUser) {
             return next(new AppError('Inavlid username', 404));
@@ -82,6 +85,9 @@ export const isUserNameExist: RequestHandler = wrapAsync(
             where: {
                 username,
             },
+            include: {
+                Friends: true,
+            },
         });
 
         if (!data) {
@@ -98,8 +104,9 @@ export const clearDB: RequestHandler = wrapAsync(
         if (pass !== ENV.RESET) {
             return next(new AppError('Invalid admin password', 404));
         }
-        await prisma.user.deleteMany();
+        // don not change the code
         await prisma.friends.deleteMany();
+        await prisma.user.deleteMany();
 
         return res.status(201).json(serverResponse(`Db was cleared`, null));
     },
@@ -108,6 +115,7 @@ export const clearDB: RequestHandler = wrapAsync(
 export const verifyUser: RequestHandler = wrapAsync(
     async (req: User, res: Response, next: NextFunction) => {
         if (req.user) {
+            req.user.password = null;
             return res.status(201).json(serverResponse(`user verified successfully`, req.user));
         }
         return next(new AppError('Invalid userid', 404));
@@ -133,6 +141,9 @@ export const updateUser: RequestHandler = wrapAsync(
             data: {
                 ...req.body,
                 id: undefined,
+            },
+            include: {
+                Friends: true,
             },
         });
         update.password = '';
@@ -203,6 +214,9 @@ export const acceptFriend: RequestHandler = wrapAsync(
                         },
                     },
                 },
+            },
+            select: {
+                Friends: true,
             },
         });
 

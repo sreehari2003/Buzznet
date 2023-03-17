@@ -1,14 +1,20 @@
 import Lottie from 'react-lottie';
+import { Center } from '@chakra-ui/react';
+import Loaders from '../../public/loader.json';
 
 export const Loader = () => {
     const defaultOptions = {
-        loop: false,
+        loop: true,
         autoplay: true,
-        animationData: '/loader.json',
+        animationData: Loaders,
         rendererSettings: {
             preserveAspectRatio: 'xMidYMid slice',
         },
     };
 
-    return <Lottie options={defaultOptions} height={400} width={400} />;
+    return (
+        <Center h="100vh">
+            <Lottie options={defaultOptions} height={300} width={300} />
+        </Center>
+    );
 };

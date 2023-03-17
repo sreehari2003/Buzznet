@@ -6,6 +6,7 @@ import { Loader } from './components/Loader';
 
 export const UserLayout = ({ children }: Child): JSX.Element => {
     const { isLoading } = useAuth();
+
     if (isLoading) {
         <Loader />;
     }
