@@ -38,7 +38,7 @@ export const EditProfile = ({ isOpen, onClose }: Prop) => {
         handleSubmit,
         watch,
         reset,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<ProfileForm>({
         mode: 'onSubmit',
         resolver: yupResolver(UpdateProfile),
@@ -159,7 +159,7 @@ export const EditProfile = ({ isOpen, onClose }: Prop) => {
                         >
                             Cancel
                         </Button>
-                        <Button colorScheme="blue" w="40%" type="submit">
+                        <Button colorScheme="blue" w="40%" type="submit" isLoading={isSubmitting}>
                             Update
                         </Button>
                     </Flex>

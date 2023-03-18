@@ -7,11 +7,11 @@ import {
     ModalHeader,
     ModalOverlay,
     useToast,
-    Text,
 } from '@chakra-ui/react';
 import { AddFriendCard } from '@app/components/cards';
 import { useEffect, useState } from 'react';
 import { buzzNetAPI } from '@app/config';
+import { useAuth } from '@app/hooks';
 
 type Modals = {
     isOpen: boolean;
@@ -22,10 +22,12 @@ type Friend = {
     id: string;
     status: 'PENDING' | 'CONFIRMED';
     userName: string;
+    source: 'SEND' | 'RECEIVED';
 };
 
 export const AddFriend = ({ isOpen, onClose }: Modals) => {
     const [loading, setLoading] = useState<boolean>(false);
+    const { setUser, user } = useAuth();
     const [friend, setFriend] = useState<Friend[] | null>(null);
 
     const toast = useToast();
@@ -58,20 +60,22 @@ export const AddFriend = ({ isOpen, onClose }: Modals) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
-    const acceptFriend = async (user: string) => {
+    const acceptFriend = async (users: string) => {
         try {
             const { data } = await buzzNetAPI.post('/accept', {
-                from: user,
+                from: users,
             });
 
             if (!data.ok) {
                 throw new Error();
             }
             setFriend(data.Friends);
+            // @ts-ignore
+            setUser({ ...user, Friends: data.data.Friends });
             toast({
                 title: 'Request Succesfull',
-                description: `You are now friends with ${user}`,
-                status: 'error',
+                description: `You are now friends with ${users}`,
+                status: 'success',
                 duration: 9000,
                 isClosable: true,
             });
@@ -96,7 +100,7 @@ export const AddFriend = ({ isOpen, onClose }: Modals) => {
                         <CircularProgress isIndeterminate color="green.300" />
                     ) : (
                         friend?.map((el) => {
-                            if (el.status === 'PENDING') {
+                            if (el.status === 'PENDING' && el.source !== 'SEND') {
                                 return (
                                     <AddFriendCard
                                         name={el.userName}
@@ -105,10 +109,9 @@ export const AddFriend = ({ isOpen, onClose }: Modals) => {
                                     />
                                 );
                             }
-                            return <Text>No friend request yet</Text>;
+                            return null;
                         })
                     )}
-                    {friend?.length === 0 && <Text>No friend request yet</Text>}
                 </ModalBody>
             </ModalContent>
         </Modal>

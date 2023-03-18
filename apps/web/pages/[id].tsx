@@ -25,6 +25,7 @@ type Friend = {
     id: string;
     status: 'PENDING' | 'CONFIRMED';
     userName: string;
+    source: 'SEND' | 'RECEIVED';
 };
 
 export interface User extends ProfileForm {
@@ -38,6 +39,7 @@ const Page: NextPageWithLayout = () => {
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const isOwnAccount = user?.username === userInfo?.username;
+    const isAlreadyFriend = userInfo?.Friends?.map((el) => el.userName === user?.username);
 
     // using this to prevent the recomputation of number of friends
     const numberOfFriends = useMemo(() => {
@@ -54,7 +56,7 @@ const Page: NextPageWithLayout = () => {
 
     useEffect(() => {
         if (!router.isReady) return;
-        if (router.isReady && id !== user?.username) {
+        if (id !== user?.username) {
             (async () => {
                 try {
                     setLoading(true);
@@ -76,7 +78,7 @@ const Page: NextPageWithLayout = () => {
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [router.isReady]);
+    }, [router.isReady, user]);
 
     const addFriend = async () => {
         try {
@@ -96,6 +98,31 @@ const Page: NextPageWithLayout = () => {
         } catch {
             toast({
                 title: 'failed to send friend request',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+    };
+
+    const unFriend = async () => {
+        try {
+            const { data: resp } = await buzzNetAPI.post(`/remove`, {
+                from: user?.Friends?.find((el) => el.userName === userInfo?.username),
+                to: userInfo?.Friends?.find((el) => el.userName === user?.username),
+            });
+            if (!resp.ok) {
+                throw new Error();
+            }
+            toast({
+                title: 'unfriend was done',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            });
+        } catch {
+            toast({
+                title: 'failed to un friend the user',
                 status: 'error',
                 duration: 9000,
                 isClosable: true,
@@ -137,7 +164,7 @@ const Page: NextPageWithLayout = () => {
                                 <Heading fontSize="15px" mt="10px" fontWeight="500">
                                     {numberOfFriends} friends
                                 </Heading>
-                                {user?.username !== userInfo?.username && (
+                                {!isOwnAccount && !isAlreadyFriend && (
                                     <Button
                                         fontSize="15px"
                                         mt="10px"
@@ -147,6 +174,18 @@ const Page: NextPageWithLayout = () => {
                                         onClick={addFriend}
                                     >
                                         Add Friend
+                                    </Button>
+                                )}
+                                {!isOwnAccount && isAlreadyFriend && (
+                                    <Button
+                                        fontSize="15px"
+                                        mt="10px"
+                                        fontWeight="500"
+                                        colorScheme="blue"
+                                        variant="outline"
+                                        onClick={unFriend}
+                                    >
+                                        Unfriend
                                     </Button>
                                 )}
                             </Box>
@@ -177,7 +216,7 @@ const Page: NextPageWithLayout = () => {
                                 </Button>
                             )}
 
-                            {user?.username === userInfo?.username && (
+                            {isOwnAccount && (
                                 <Button colorScheme="blue" variant="outline" onClick={onOpen}>
                                     edit profile
                                 </Button>
@@ -185,7 +224,11 @@ const Page: NextPageWithLayout = () => {
                         </Flex>
                     </Flex>
                     <Divider />
-                    <FriendTabs isOwnAccount={isOwnAccount} />
+                    <FriendTabs
+                        isOwnAccount={isOwnAccount}
+                        friends={userInfo?.Friends || []}
+                        to={userInfo?.username || ''}
+                    />
                 </Box>
             </VStack>
         </HStack>

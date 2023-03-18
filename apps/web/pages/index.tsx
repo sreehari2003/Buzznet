@@ -22,12 +22,10 @@ import { CreatUserModal } from '@app/views/signup';
 import { buzzNetAPI } from '@app/config';
 import { useRouter } from 'next/router';
 import { useAuth } from '@app/hooks';
-import { NextPageWithLayout } from 'next';
-import { MainLayout } from '@app/layout';
 
 type UserInput = Yup.InferType<typeof userLogin>;
 
-const Index: NextPageWithLayout = () => {
+const Index = () => {
     const { setUser, user } = useAuth();
     const {
         register,
@@ -129,7 +127,5 @@ const Index: NextPageWithLayout = () => {
         </Flex>
     );
 };
-
-Index.Layout = MainLayout;
 
 export default Index;

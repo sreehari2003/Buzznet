@@ -154,6 +154,7 @@ export const updateUser: RequestHandler = wrapAsync(
 export const addFriend: RequestHandler = wrapAsync(
     async (req: User, res: Response, next: NextFunction) => {
         const id = req?.user?.id;
+
         const { to } = req.body;
         if (!to) {
             return next(new AppError('Invalid friend request', 404));
@@ -243,6 +244,48 @@ export const acceptFriend: RequestHandler = wrapAsync(
     },
 );
 
+export const unFriend: RequestHandler = wrapAsync(
+    async (req: User, res: Response, next: NextFunction) => {
+        const { from, to } = req.body;
+        if (!from || !to) {
+            return next(new AppError('Invalid request', 404));
+        }
+        const data = await prisma.user.update({
+            where: {
+                id: req.user.id,
+            },
+            data: {
+                Friends: {
+                    delete: {
+                        id: from.id,
+                    },
+                },
+            },
+            include: {
+                Friends: true,
+            },
+        });
+
+        await prisma.user.update({
+            where: {
+                username: from.userName,
+            },
+            data: {
+                Friends: {
+                    delete: {
+                        id: to.id,
+                    },
+                },
+            },
+            include: {
+                Friends: true,
+            },
+        });
+
+        return res.status(201).json(serverResponse(`freind request was accepted`, data));
+    },
+);
+
 export const getAllFreindRequest: RequestHandler = wrapAsync(async (req: User, res: Response) => {
     const id = req?.user?.id;
     const allFreindRequest = await prisma.user.findUnique({
@@ -255,3 +298,45 @@ export const getAllFreindRequest: RequestHandler = wrapAsync(async (req: User, r
     });
     return res.status(201).json(serverResponse(`freind requests`, allFreindRequest));
 });
+
+type To = {
+    to: string;
+};
+
+export const mutualFriend: RequestHandler = wrapAsync(
+    async (req: User, res: Response, next: NextFunction) => {
+        const { id } = req.user;
+        const { to } = req.query as To;
+
+        if (!to) {
+            return next(new AppError('Invalid request', 404));
+        }
+
+        const mutualFriends = await prisma.user.findMany({
+            where: {
+                AND: [
+                    { id },
+                    {
+                        Friends: {
+                            some: {
+                                userName: to,
+                            },
+                        },
+                    },
+                ],
+            },
+            include: {
+                Friends: {
+                    where: {
+                        userName: to,
+                    },
+                    select: {
+                        user: true,
+                    },
+                },
+            },
+        });
+
+        return res.status(201).json(serverResponse(`mutual friends are`, mutualFriends));
+    },
+);
