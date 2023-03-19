@@ -10,6 +10,7 @@ import {
 import { UserCard } from '@app/components/cards';
 import React, { useState } from 'react';
 import { buzzNetAPI } from '@app/config';
+import Cookies from 'js-cookie';
 
 interface Friends {
     userName: string;
@@ -36,6 +37,8 @@ export const FriendTabs = ({ isOwnAccount, friends, to }: Prop) => {
     const callMutual = async () => {
         try {
             setMutualLoading(true);
+            const token = Cookies.get('jwtID');
+            buzzNetAPI.defaults.headers.common.authorization = `Bearer ${token}`;
             const { data: res } = await buzzNetAPI.get(`/mutual?to=${to}`);
             if (!res.ok) {
                 throw new Error(res.message);
