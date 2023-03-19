@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-import { ENV } from 'src/config';
+import { ENV } from '../config';
 import { AppError } from '../utils';
 import { userRouter } from '../router';
 
