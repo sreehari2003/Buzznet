@@ -1,1 +1,2 @@
-export { CreatUserModal, ProfileForm } from './components/Modal';
+export { CreatUserModal } from './components/Modal';
+export type { ProfileForm } from './components/Modal';

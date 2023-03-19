@@ -5,5 +5,6 @@ declare namespace NodeJS {
         CLINETID: string;
         CLINETSECRET: string;
         JWT_SECRET: string;
+        WEB_URL: string;
     }
 }

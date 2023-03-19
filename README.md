@@ -7,7 +7,8 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <h3 align="center">Buzznet</h3>
+  <h1 align="center">Buzznet</h1>
+  <h2>Internship task for carestack</h2>
   <p align="center">
    Buzznet is a opensource social media platform for peoples to find friends online.
    our featues include search for friends , send friend request etc
@@ -46,12 +47,23 @@
 -   [Next Js](https://nextjs.org/)
 -   [Express Js](https://nestjs.com/)
 -   [Typescript](https://typescript.org/)
+-   [MongoDB](https://typescript.org/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 
-## Getting Started
+## AIM
+
+Create a mini social network. The application should have features like:-
+
+· Users should be able to sign up/sign in, and create a profile for themselves.
+
+· Search for other users.
+
+· View other users' profiles & make them friends/unfriend them.
+
+· View a list of mutual friends between users. A mutual friend is a user who is a friend of two other users who may or may not know each other.
 
 ### Prerequisites
 
@@ -70,7 +82,7 @@ You need to install
 
 2. Install all the NPM packages all the applications.
 
-    > We are using Yarn workspace and turborepo to manage the applications in monorepo.
+    > We are using pnpm and turborepo to manage the applications in monorepo.
 
     ```sh
     pnpm install

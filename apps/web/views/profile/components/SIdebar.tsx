@@ -6,85 +6,78 @@ import {
     TabPanels,
     useToast,
     CircularProgress,
-    Heading,
 } from '@chakra-ui/react';
 import { UserCard } from '@app/components/cards';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { buzzNetAPI } from '@app/config';
-import Cookies from 'js-cookie';
 
-type Friend = {
-    id: string;
-    status: 'PENDING' | 'CONFIRMED';
+interface Friends {
     userName: string;
+    id: string;
+    status: 'CONFIRMED' | 'PENDING';
+}
+
+interface Mutual {
+    username: string;
+    id: string;
+}
+
+type Prop = {
+    isOwnAccount: boolean;
+    friends: Friends[] | [];
+    to: string;
 };
 
-export const FriendTabs = ({ isOwnAccount }: { isOwnAccount: boolean }) => {
-    const [friend, setFriend] = useState<Friend[] | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-
+export const FriendTabs = ({ isOwnAccount, friends, to }: Prop) => {
+    const [datas, setData] = useState<Mutual[] | null>(null);
+    const [mutualLoading, setMutualLoading] = useState<boolean>(false);
     const toast = useToast();
-    useEffect(() => {
-        (async () => {
-            try {
-                setLoading(true);
-                const token = Cookies.get('jwtID');
-                buzzNetAPI.defaults.headers.common.authorization = `Bearer ${token}`;
-                const { data } = await buzzNetAPI.get('/friend');
-                if (!data.ok) {
-                    throw new Error();
-                }
 
-                setFriend(data.data.Friends);
-            } catch {
-                toast({
-                    title: 'Couldnt complete your request',
-                    description: 'please try again later',
-                    status: 'error',
-                    duration: 9000,
-                    isClosable: true,
-                });
-            } finally {
-                setLoading(false);
+    const callMutual = async () => {
+        try {
+            setMutualLoading(true);
+            const { data: res } = await buzzNetAPI.get(`/mutual?to=${to}`);
+            if (!res.ok) {
+                throw new Error(res.message);
             }
-        })();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+            setData(res.data);
+        } catch {
+            toast({
+                title: 'Couldnt complete your request',
+                description: 'please tru again later',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+        } finally {
+            setMutualLoading(false);
+        }
+    };
 
     return (
         <Tabs align="end">
             <TabList>
                 <Tab w={isOwnAccount ? '100%' : '50%'}>Friends</Tab>
-                {!isOwnAccount && <Tab w="50%">Mutual Friends</Tab>}
+                {!isOwnAccount && (
+                    <Tab w="50%" onClick={callMutual}>
+                        Mutual Friends
+                    </Tab>
+                )}
             </TabList>
             <TabPanels>
                 <TabPanel display="flex" flexWrap="wrap">
-                    {loading ? (
-                        <CircularProgress isIndeterminate color="blue" />
-                    ) : (
-                        friend?.map((el) => {
-                            if (el.status === 'CONFIRMED') {
-                                return <UserCard name={el.userName} key={el.id} />;
-                            }
-                            return (
-                                <Heading textAlign="center" fontSize="20px">
-                                    No friends yet
-                                </Heading>
-                            );
-                        })
-                    )}
-                    {friend?.length === 0 && (
-                        <Heading textAlign="center" fontSize="20px">
-                            No friends yet
-                        </Heading>
-                    )}
+                    {friends?.map((el) => {
+                        if (el.status === 'CONFIRMED') {
+                            return <UserCard name={el.userName} key={el.id} />;
+                        }
+                        return null;
+                    })}
                 </TabPanel>
                 <TabPanel display="flex" flexWrap="wrap">
-                    <UserCard name="sree" />
-                    <UserCard name="swathi" />
-                    <UserCard name="gopan" />
-                    <UserCard name="surya" />
+                    {mutualLoading && <CircularProgress isIndeterminate color="green.300" />}
+                    {!mutualLoading &&
+                        datas &&
+                        datas.map((el) => <UserCard name={el.username} key={el.id} />)}
                 </TabPanel>
             </TabPanels>
         </Tabs>

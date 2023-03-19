@@ -9,7 +9,9 @@ import {
     updateUser,
     addFriend,
     acceptFriend,
+    unFriend,
     getAllFreindRequest,
+    mutualFriend,
 } from '../controller/user.controller';
 import { isAuth } from '../server/middleware/isAuth';
 
@@ -23,3 +25,5 @@ userRouter.get('/me', isAuth, verifyUser);
 userRouter.post('/add', isAuth, addFriend);
 userRouter.post('/accept', isAuth, acceptFriend);
 userRouter.get('/friend', isAuth, getAllFreindRequest);
+userRouter.post('/remove', isAuth, unFriend);
+userRouter.get('/mutual', isAuth, mutualFriend);

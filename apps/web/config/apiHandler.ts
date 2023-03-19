@@ -2,7 +2,7 @@ import Axios from 'axios';
 import Cookies from 'js-cookie';
 
 export const buzzNetAPI = Axios.create({
-    baseURL: 'http://localhost:8000/api/v1',
+    baseURL: process.env.NEXT_PUBLIC_API_DOMAIN,
     headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
