@@ -23,6 +23,7 @@ import { UpdateProfile } from '@app/views/validator';
 import { buzzNetAPI } from '@app/config';
 import { useAuth } from '@app/hooks';
 import { useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 interface Prop {
     isOpen: boolean;
@@ -64,6 +65,8 @@ export const EditProfile = ({ isOpen, onClose }: Prop) => {
 
     const handleFormData: SubmitHandler<ProfileForm> = async (data) => {
         try {
+            const token = Cookies.get('jwtID');
+            buzzNetAPI.defaults.headers.common.authorization = `Bearer ${token}`;
             const { data: res } = await buzzNetAPI.patch('/user', {
                 ...data,
                 Friends: undefined,

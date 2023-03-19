@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
+import { ENV } from 'src/config';
 import { AppError } from '../utils';
 import { userRouter } from '../router';
 
@@ -35,7 +36,7 @@ main()
 // global
 server.use(
     cors({
-        origin: ['http://localhost:3000', 'http://localhost:3001'],
+        origin: ['http://localhost:3000', 'http://localhost:3001', ENV.WEB_URL],
         credentials: true,
     }),
 );

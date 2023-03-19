@@ -9,4 +9,5 @@ export const ENV = {
     CLINETSECRET: process.env.CLINETSECRET,
     JWT_SECRET: process.env.JWT_SECRET as string,
     RESET: process.env.RESET,
+    WEB_URL: process.env.WEB_URL,
 };

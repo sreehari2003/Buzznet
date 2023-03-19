@@ -52,7 +52,7 @@ const Index = () => {
             if (!res.ok) {
                 throw new Error(res.message);
             }
-            setUser(res);
+            setUser(res.data);
             router.push(`/${res.data.username}`);
         } catch {
             toast({

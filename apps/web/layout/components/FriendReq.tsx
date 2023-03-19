@@ -12,6 +12,7 @@ import { AddFriendCard } from '@app/components/cards';
 import { useEffect, useState } from 'react';
 import { buzzNetAPI } from '@app/config';
 import { useAuth } from '@app/hooks';
+import Cookies from 'js-cookie';
 
 type Modals = {
     isOpen: boolean;
@@ -37,6 +38,9 @@ export const AddFriend = ({ isOpen, onClose }: Modals) => {
             (async () => {
                 try {
                     setLoading(true);
+
+                    const token = Cookies.get('jwtID');
+                    buzzNetAPI.defaults.headers.common.authorization = `Bearer ${token}`;
                     const { data } = await buzzNetAPI.get('/friend');
                     if (!data.ok) {
                         throw new Error();
