@@ -12,6 +12,7 @@ import {
     unFriend,
     getAllFreindRequest,
     mutualFriend,
+    logOut,
 } from '../controller/user.controller';
 import { isAuth } from '../server/middleware/isAuth';
 
@@ -27,3 +28,4 @@ userRouter.post('/accept', isAuth, acceptFriend);
 userRouter.get('/friend', isAuth, getAllFreindRequest);
 userRouter.post('/remove', isAuth, unFriend);
 userRouter.get('/mutual', isAuth, mutualFriend);
+userRouter.post('/logout', isAuth, logOut);

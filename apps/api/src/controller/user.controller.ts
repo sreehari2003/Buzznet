@@ -350,3 +350,9 @@ export const mutualFriend: RequestHandler = wrapAsync(
         return res.status(201).json(serverResponse(`mutual friends are`, data));
     },
 );
+
+export const logOut: RequestHandler = wrapAsync(async (req: Request, res: Response) => {
+    res.clearCookie('jwtID');
+    res.cookie('jwtID', '', { expires: new Date(0) });
+    return res.status(201).json(serverResponse(`logout successfull`, null));
+});
