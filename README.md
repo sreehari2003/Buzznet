@@ -115,12 +115,6 @@ You need to install
     pnpm --filter  api dev
     ```
 
-6. Start the database `http://localhost:5432`
-
-    ```sh
-    docker compose up
-    ```
-
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Contributing
