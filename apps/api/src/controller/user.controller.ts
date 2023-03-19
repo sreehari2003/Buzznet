@@ -36,7 +36,11 @@ export const createUser: RequestHandler = wrapAsync(
             },
         });
         const token = hashJwt(newUser.id);
-        res.cookie('jwtID', token, { httpOnly: false });
+        res.cookie('jwtID', token, {
+            httpOnly: false,
+            secure: true, // Set to true if your server uses HTTPS
+            sameSite: 'none', // Set to 'none' if your server uses HTTPS and you allow cross-site requests
+        });
         newUser.password = '';
         return res.status(201).json(serverResponse(`Your Account was created`, newUser));
     },
@@ -64,7 +68,11 @@ export const userLogin: RequestHandler = wrapAsync(
         }
 
         const token = hashJwt(existUser.id);
-        res.cookie('jwtID', token, { httpOnly: false });
+        res.cookie('jwtID', token, {
+            httpOnly: false,
+            secure: true, // Set to true if your server uses HTTPS
+            sameSite: 'none', // Set to 'none' if your server uses HTTPS and you allow cross-site requests
+        });
         existUser.password = '';
         return res.status(201).json(serverResponse(`Welcome back ${existUser.name}`, existUser));
     },
