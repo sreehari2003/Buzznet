@@ -36,7 +36,7 @@ export const createUser: RequestHandler = wrapAsync(
             },
         });
         const token = hashJwt(newUser.id);
-        res.cookie('jwtID', token, { httpOnly: false });
+        res.cookie('jwtID', token, { httpOnly: false, sameSite: 'none' });
         newUser.password = '';
         return res.status(201).json(serverResponse(`Your Account was created`, newUser));
     },
@@ -64,7 +64,7 @@ export const userLogin: RequestHandler = wrapAsync(
         }
 
         const token = hashJwt(existUser.id);
-        res.cookie('jwtID', token, { httpOnly: false });
+        res.cookie('jwtID', token, { httpOnly: false, sameSite: 'none' });
         existUser.password = '';
         return res.status(201).json(serverResponse(`Welcome back ${existUser.name}`, existUser));
     },
