@@ -69,6 +69,7 @@ export const EditProfile = ({ isOpen, onClose }: Prop) => {
             buzzNetAPI.defaults.headers.common.authorization = `Bearer ${token}`;
             const { data: res } = await buzzNetAPI.patch('/user', {
                 ...data,
+                token: undefined,
                 Friends: undefined,
             });
             if (!res.ok) {
