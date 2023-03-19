@@ -37,6 +37,10 @@
   </ol>
 </details>
 
+
+
+
+
 <!-- ABOUT THE PROJECT -->
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -62,6 +66,9 @@ project structure/
 └── package.json
 ```
 
+## video explanation
+
+https://user-images.githubusercontent.com/66205494/226189526-b6d626e3-b129-4fc5-9b5c-94da31cbc0f7.mp4
 ## AIM
 
 Create a mini social network. The application should have features like:-
