@@ -53,6 +53,15 @@
 
 <!-- GETTING STARTED -->
 
+```
+project structure/
+├── apps/
+│ ├── api/package.json
+│ └── web/package.json
+├── tsconfig
+└── package.json
+```
+
 ## AIM
 
 Create a mini social network. The application should have features like:-
@@ -64,6 +73,10 @@ Create a mini social network. The application should have features like:-
 · View other users' profiles & make them friends/unfriend them.
 
 · View a list of mutual friends between users. A mutual friend is a user who is a friend of two other users who may or may not know each other.
+
+### Api users response example
+
+<img src="./apps/web/public/response.png"/>
 
 ### Prerequisites
 
