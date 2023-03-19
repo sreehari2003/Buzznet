@@ -37,6 +37,10 @@
   </ol>
 </details>
 
+
+
+
+
 <!-- ABOUT THE PROJECT -->
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -64,8 +68,7 @@ project structure/
 
 ## video explanation
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/eShNSj2akiY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
+https://user-images.githubusercontent.com/66205494/226189526-b6d626e3-b129-4fc5-9b5c-94da31cbc0f7.mp4
 ## AIM
 
 Create a mini social network. The application should have features like:-
