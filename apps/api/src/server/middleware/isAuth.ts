@@ -21,10 +21,11 @@ export const isAuth: RequestHandler = wrapAsync(
             req.headers.authorization.startsWith('Bearer')
         ) {
             // eslint-disable-next-line prefer-destructuring
-            token = req.headers.authorization.split(' ')[1] || req.cookies.jwtID;
+            token = req.cookies.jwtID || req.headers.authorization.split(' ')[1];
         } else {
             return next(new AppError('User not logged in', 401));
         }
+
         const { id } = jwt.verify(token, ENV.JWT_SECRET) as unknown as JwtPayload;
 
         if (!id) {
