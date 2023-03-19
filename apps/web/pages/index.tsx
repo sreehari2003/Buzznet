@@ -22,6 +22,7 @@ import { CreatUserModal } from '@app/views/signup';
 import { buzzNetAPI } from '@app/config';
 import { useRouter } from 'next/router';
 import { useAuth } from '@app/hooks';
+import Cookies from 'js-cookie';
 
 type UserInput = Yup.InferType<typeof userLogin>;
 
@@ -52,6 +53,7 @@ const Index = () => {
             if (!res.ok) {
                 throw new Error(res.message);
             }
+            Cookies.set('jwtID', res.data.token);
             setUser(res.data);
             router.push(`/${res.data.username}`);
         } catch {

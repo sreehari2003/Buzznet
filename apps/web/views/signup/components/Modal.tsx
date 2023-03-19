@@ -23,6 +23,7 @@ import { Profile } from '@app/views/validator';
 import { buzzNetAPI } from '@app/config';
 import { useRouter } from 'next/router';
 import { useAuth } from '@app/hooks';
+import Cookies from 'js-cookie';
 
 interface Prop {
     isOpen: boolean;
@@ -58,6 +59,7 @@ export const CreatUserModal = ({ isOpen, onClose }: Prop) => {
                 duration: 9000,
                 isClosable: true,
             });
+            Cookies.set('jwtID', res.data.token);
             setUser(res.data);
             router.push(`/${res.data.username}`);
         } catch {

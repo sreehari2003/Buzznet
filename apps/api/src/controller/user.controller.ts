@@ -42,7 +42,9 @@ export const createUser: RequestHandler = wrapAsync(
             sameSite: 'none', // Set to 'none' if your server uses HTTPS and you allow cross-site requests
         });
         newUser.password = '';
-        return res.status(201).json(serverResponse(`Your Account was created`, newUser));
+        return res
+            .status(201)
+            .json(serverResponse(`Your Account was created`, { ...newUser, token }));
     },
 );
 
@@ -74,7 +76,9 @@ export const userLogin: RequestHandler = wrapAsync(
             sameSite: 'none', // Set to 'none' if your server uses HTTPS and you allow cross-site requests
         });
         existUser.password = '';
-        return res.status(201).json(serverResponse(`Welcome back ${existUser.name}`, existUser));
+        return res
+            .status(201)
+            .json(serverResponse(`Welcome back ${existUser.name}`, { ...existUser, token }));
     },
 );
 
