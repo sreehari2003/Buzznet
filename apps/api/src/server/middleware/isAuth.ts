@@ -21,7 +21,7 @@ export const isAuth: RequestHandler = wrapAsync(
             req.headers.authorization.startsWith('Bearer')
         ) {
             // eslint-disable-next-line prefer-destructuring
-            token = req.headers.authorization.split(' ')[1];
+            token = req.headers.authorization.split(' ')[1] || req.cookies.jwtID;
         } else {
             return next(new AppError('User not logged in', 401));
         }
