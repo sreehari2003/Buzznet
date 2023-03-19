@@ -37,7 +37,7 @@ main()
 // global
 server.use(
     cors({
-        origin: ['http://localhost:3000', 'http://localhost:3001', 'https://buzznet.vercel.app/'],
+        origin: ['http://localhost:3000', 'http://localhost:3001', 'https://buzznet.vercel.app'],
         credentials: true,
     }),
 );
