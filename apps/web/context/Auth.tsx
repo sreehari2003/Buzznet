@@ -36,7 +36,13 @@ export const AuthContextProvider = ({ children }: Child) => {
     Router.events.on('routeChangeComplete', () => {
         setLoading(false);
     });
-    const logOut = () => {
+    const logOut = async () => {
+        try {
+            await buzzNetAPI.post(`/logout`);
+        } catch {
+            // eslint-disable-next-line no-console
+            console.log('');
+        }
         setUser(null);
         Cookies.remove('jwtID');
         router.push('/');
