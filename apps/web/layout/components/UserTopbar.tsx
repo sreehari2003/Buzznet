@@ -23,9 +23,8 @@ import {
     Alert,
     AlertIcon,
     CircularProgress,
+    Link,
 } from '@chakra-ui/react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useCallback, useRef, useState } from 'react';
 import { BiSearchAlt } from 'react-icons/bi';
 import { UserCard } from '@app/components/cards';
@@ -37,14 +36,8 @@ export const UserTopbar = () => {
 
     const [search, setSearch] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(false);
-
-    const router = useRouter();
     const ref = useRef<HTMLDivElement>(null);
     const { logOut, user } = useAuth();
-
-    const myProfile = () => {
-        router.push(`/${user?.username}`);
-    };
 
     const searchUsers = async (id: string) => {
         try {
@@ -145,7 +138,9 @@ export const UserTopbar = () => {
             <Menu>
                 <MenuButton as={Avatar} _hover={{ cursor: 'pointer' }} />
                 <MenuList>
-                    <MenuItem onClick={myProfile}> Profile</MenuItem>
+                    <Link href={`/${user?.username}`} _hover={{ textDecoration: 'none' }}>
+                        <MenuItem> Profile</MenuItem>
+                    </Link>
                     <MenuItem onClick={friendOnOpen}> Friend Requests</MenuItem>
                     <MenuItem onClick={logOut}>Logout</MenuItem>
                 </MenuList>

@@ -1,4 +1,12 @@
-import { Tabs, Tab, TabList, TabPanel, TabPanels, useToast } from '@chakra-ui/react';
+import {
+    Tabs,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
+    useToast,
+    CircularProgress,
+} from '@chakra-ui/react';
 import { UserCard } from '@app/components/cards';
 import React, { useState } from 'react';
 import { buzzNetAPI } from '@app/config';
@@ -9,6 +17,11 @@ interface Friends {
     status: 'CONFIRMED' | 'PENDING';
 }
 
+interface Mutual {
+    username: string;
+    id: string;
+}
+
 type Prop = {
     isOwnAccount: boolean;
     friends: Friends[] | [];
@@ -16,11 +29,13 @@ type Prop = {
 };
 
 export const FriendTabs = ({ isOwnAccount, friends, to }: Prop) => {
-    const [datas, setData] = useState<Friends[] | null>(null);
+    const [datas, setData] = useState<Mutual[] | null>(null);
+    const [mutualLoading, setMutualLoading] = useState<boolean>(false);
     const toast = useToast();
 
     const callMutual = async () => {
         try {
+            setMutualLoading(true);
             const { data: res } = await buzzNetAPI.get(`/mutual?to=${to}`);
             if (!res.ok) {
                 throw new Error(res.message);
@@ -28,12 +43,14 @@ export const FriendTabs = ({ isOwnAccount, friends, to }: Prop) => {
             setData(res.data);
         } catch {
             toast({
-                title: 'Couldnt update your account info.',
-                description: 'user name already exists',
+                title: 'Couldnt complete your request',
+                description: 'please tru again later',
                 status: 'error',
                 duration: 9000,
                 isClosable: true,
             });
+        } finally {
+            setMutualLoading(false);
         }
     };
 
@@ -57,7 +74,10 @@ export const FriendTabs = ({ isOwnAccount, friends, to }: Prop) => {
                     })}
                 </TabPanel>
                 <TabPanel display="flex" flexWrap="wrap">
-                    {datas && datas.map((el) => <UserCard name={el.userName} key={el.id} />)}
+                    {mutualLoading && <CircularProgress isIndeterminate color="green.300" />}
+                    {!mutualLoading &&
+                        datas &&
+                        datas.map((el) => <UserCard name={el.username} key={el.id} />)}
                 </TabPanel>
             </TabPanels>
         </Tabs>

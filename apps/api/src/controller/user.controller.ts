@@ -337,6 +337,8 @@ export const mutualFriend: RequestHandler = wrapAsync(
             },
         });
 
-        return res.status(201).json(serverResponse(`mutual friends are`, mutualFriends));
+        const data = mutualFriends.flatMap((el) => el.Friends.flatMap((elm) => elm.user));
+
+        return res.status(201).json(serverResponse(`mutual friends are`, data));
     },
 );

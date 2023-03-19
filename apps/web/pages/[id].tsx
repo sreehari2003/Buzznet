@@ -39,7 +39,7 @@ const Page: NextPageWithLayout = () => {
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const isOwnAccount = user?.username === userInfo?.username;
-    const isAlreadyFriend = userInfo?.Friends?.map((el) => el.userName === user?.username);
+    const isAlreadyFriend = userInfo?.Friends?.some((el) => el.userName === user?.username);
 
     // using this to prevent the recomputation of number of friends
     const numberOfFriends = useMemo(() => {
