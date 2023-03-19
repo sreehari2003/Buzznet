@@ -5,7 +5,6 @@ import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-import { ENV } from '../config';
 import { AppError } from '../utils';
 import { userRouter } from '../router';
 
@@ -36,7 +35,7 @@ main()
 // global
 server.use(
     cors({
-        origin: ['http://localhost:3000', 'http://localhost:3001', ENV.WEB_URL],
+        origin: ['http://localhost:3000', 'http://localhost:3001', 'https://buzznet.vercel.app'],
         credentials: true,
     }),
 );
